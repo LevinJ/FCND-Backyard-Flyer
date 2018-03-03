@@ -49,18 +49,18 @@ class BackyardFlyer(Drone):
             # check if altitude is within 95% of target
             if altitude > 0.95 * self.target_position[2]:
                 #take off phase complete, transition to waypoints
-                print("first time waypoint")
-                print("current position = {}".format(self.local_position))
+#                 print("first time waypoint")
+#                 print("current position = {}".format(self.local_position))
                 self.all_waypoints = self.calculate_box()
                 self.waypoint_transition()
         elif self.flight_state == States.WAYPOINT:
             if np.linalg.norm(self.target_position[0:2] - self.local_position[0:2]) < 1.0:
                 if len(self.all_waypoints) > 0:
-                    print("another waypoint")
+#                     print("another waypoint")
                     self.waypoint_transition()
                 else:
                     if np.linalg.norm(self.local_velocity[0:2]) < 1.0:
-                        print("no more waypoint")
+#                         print("no more waypoint")
                         self.landing_transition()
 
     def velocity_callback(self):
@@ -123,7 +123,7 @@ class BackyardFlyer(Drone):
         2. Command a takeoff to 3.0m
         3. Transition to the TAKEOFF state
         """
-        print("takeoff transition")
+#         print("takeoff transition")
         print("current position = {}, global position={}".format(self.local_position, self.global_position))
         target_altitude = 3.0
         self.target_position[2] = target_altitude
@@ -137,10 +137,10 @@ class BackyardFlyer(Drone):
         1. Command the next waypoint position
         2. Transition to WAYPOINT state
         """
-        
+#         print("waypoint transition")
         self.flight_state= States.WAYPOINT
         self.target_position = self.all_waypoints.pop(0)
-        print('local position = {},target position = {}'.format(self.local_position[0:3], self.target_position))
+        print('local position = {},target position = {}'.format(self.local_position, self.target_position))
         self.cmd_position(self.target_position[0], self.target_position[1], self.target_position[2], 0.0)
         
 
@@ -162,6 +162,7 @@ class BackyardFlyer(Drone):
         """
         print("disarm transition")
         self.disarm()
+        self.release_control()
         self.flight_state = States.DISARMING
 
     def manual_transition(self):
@@ -173,8 +174,6 @@ class BackyardFlyer(Drone):
         4. Transition to the MANUAL state
         """
         print("manual transition")
-
-        self.release_control()
         self.stop()
         self.in_mission = False
         self.flight_state = States.MANUAL
@@ -186,12 +185,6 @@ class BackyardFlyer(Drone):
         2. Start the drone connection
         3. Close the log file
         """
-#         print("Creating log file")
-#         self.start_log("Logs", "NavLog.txt")
-#         print("starting connection")
-#         self.connection.start()
-#         print("Closing log file")
-#         self.stop_log()
         self.start_log("Logs", "NavLog.txt")
         # self.connect()
 
